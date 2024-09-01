@@ -458,14 +458,16 @@ MonoBehaviour:
   tilePrefab: {fileID: 919132149155446097, guid: 61a308bbd77f4f04fa375722f0cdf31a,
     type: 3}
   objects:
-  - {fileID: 919132149155446097, guid: a8f0ba4bca3b33540862db9e44678413, type: 3}
-  - {fileID: 919132149155446097, guid: 2d735e973b563c845960ae341e712de3, type: 3}
-  - {fileID: 919132149155446097, guid: 3efbc76f06687c045b9d2a2a37a6c53d, type: 3}
+  - {fileID: 5922945161274160313, guid: ba7ed110564d3e547b04985d6a17c9eb, type: 3}
+  - {fileID: 5035288275552202986, guid: 7e8a207dc14c42b4790b006a4721aef2, type: 3}
+  - {fileID: 1001187834177989640, guid: b7fc51e692a6034499aeb2e461e438c2, type: 3}
+  - {fileID: 310454480901323346, guid: 92ce242c113ec934ca993d1d6720561a, type: 3}
+  - {fileID: 8472888441229388573, guid: 6e37b78df47fdfa4883a15d332848895, type: 3}
   worldWidth: 15
   worldHeight: 15
   tileSize: 1
   spacing: 1
-  objectSpawnChance: 0.2
+  objectSpawnChance: 0.1
   objectHeightOffset: 2
 --- !u!4 &1338933778
 Transform:
