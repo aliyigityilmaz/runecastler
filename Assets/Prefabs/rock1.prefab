@@ -100,7 +100,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   resourceType: 1
   resourcesAmount: 10
-  maxHitsForResource: 2
+  maxHitsForResource: 4
   fillImage: {fileID: 3479601600936093391}
   fillCanvas: {fileID: 5698849707201812581}
 --- !u!65 &-2805815796261051326
