@@ -16,10 +16,16 @@ public class WorldGenerator : MonoBehaviour
     public float spacing = 0.1f; // Tilelar arasýndaki boþluk
     public float objectSpawnChance = 0.2f; // Objelerin spawn olma ihtimali
     public float objectHeightOffset = 0.5f; // Objelerin y ekseninde yerleþim düzeltmesi
-    private Tile[,] tiles; // Tüm tile'larý saklamak için 2D dizi
+    public Tile[,] tiles; // Tüm tile'larý saklamak için 2D dizi
 
     void Awake()
     {
+        // Enable fog
+        RenderSettings.fog = true;
+        RenderSettings.fogMode = FogMode.Exponential; // or FogMode.Linear for linear fog
+        RenderSettings.fogColor = Color.gray; // Set the color of the fog
+        RenderSettings.fogDensity = 0.01f; // Adjust the density for Exponential fog
+
         tiles = new Tile[worldWidth, worldHeight];
         GenerateWorld();
         PlacePlayerBase();
@@ -66,8 +72,8 @@ public class WorldGenerator : MonoBehaviour
 
                     Quaternion randomRotation = Quaternion.Euler(0, Random.Range(0f, 360f), 0);
 
+                    // Objeyi oluþtur ve tile'ýn child'ý yap
                     GameObject placedObject = Instantiate(obj, objectPosition, randomRotation);
-
                     placedObject.transform.SetParent(tileObject.transform);
 
                     // Tile'ý dolu olarak iþaretle
