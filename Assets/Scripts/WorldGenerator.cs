@@ -66,7 +66,7 @@ public class WorldGenerator : MonoBehaviour
                 // Obje spawn etme olasýlýðýný sadece Greenland tiles için uygula
                 if (tileType == TileType.Greenland && Random.value < objectSpawnChance)
                 {
-                   SpawnObjectsOnTile(tileObject);
+                    SpawnObjectsOnTile(tileObject);
                 }
             }
         }
@@ -109,21 +109,42 @@ public class WorldGenerator : MonoBehaviour
         int centerX = worldWidth / 2;
         int centerZ = worldHeight / 2;
 
-        // Place the base at the center of the map
-        Vector3 basePosition = new Vector3(centerX * (tileSize + spacing), 2, centerZ * (tileSize + spacing));
-        GameObject playerBase = Instantiate(basePrefab, basePosition, Quaternion.identity);
-        playerBase.transform.SetParent(transform);
-
-        // Mark the 3x3 area around the base as occupied
+        // Loop through a 3x3 area centered around the base
         for (int x = centerX - 1; x <= centerX + 1; x++)
         {
             for (int z = centerZ - 1; z <= centerZ + 1; z++)
             {
                 if (x >= 0 && x < worldWidth && z >= 0 && z < worldHeight)
                 {
+                    // Place the base building only in the center
+                    if (x == centerX && z == centerZ)
+                    {
+                        Vector3 basePosition = new Vector3(x * (tileSize + spacing), 2, z * (tileSize + spacing));
+                        GameObject playerBase = Instantiate(basePrefab, basePosition, Quaternion.identity);
+
+                        // Parent the base to the center tile
+                        playerBase.transform.SetParent(tiles[x, z].transform);
+                    }
+
+                    // Mark the tile as occupied and prevent any spawning
                     tiles[x, z].isOccupied = true;
                 }
             }
+        }
+    }
+
+    public void PlaceBuildingOnTile(int x, int z, GameObject buildingPrefab)
+    {
+        if (x >= 0 && x < worldWidth && z >= 0 && z < worldHeight)
+        {
+            Vector3 buildingPosition = new Vector3(x * (tileSize + spacing), 2, z * (tileSize + spacing));
+            GameObject building = Instantiate(buildingPrefab, buildingPosition, Quaternion.identity);
+
+            // Parent the building to the tile
+            building.transform.SetParent(tiles[x, z].transform);
+
+            // Mark the tile as occupied
+            tiles[x, z].isOccupied = true;
         }
     }
 

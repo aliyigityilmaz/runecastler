@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Base
   - MainCam
+  - SpawnPoint
   layers:
   - Default
   - TransparentFX

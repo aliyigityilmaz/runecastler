@@ -135,17 +135,16 @@ public class BuildSystem : MonoBehaviour
 
     void PlaceBuilding(Tile startingTile)
     {
-        Vector3 buildPosition = startingTile.transform.position;
-        buildPosition.y = 0; // Make sure the building is placed on the ground
-        GameObject building = Instantiate(selectedBuildingPrefab, buildPosition, Quaternion.identity);
-        building.transform.SetParent(worldGenerator.transform);
+        Vector3 buildPosition = new Vector3(startingTile.transform.position.x, 2, startingTile.transform.position.z);
 
-        // Get tile position in the grid
+        GameObject building = Instantiate(selectedBuildingPrefab, buildPosition, Quaternion.identity);
+
+        PlaceBuildingOnTile(startingTile, building);
+
         Vector3 tilePosition = startingTile.transform.position;
         int startX = Mathf.RoundToInt(tilePosition.x / (worldGenerator.tileSize + worldGenerator.spacing));
         int startZ = Mathf.RoundToInt(tilePosition.z / (worldGenerator.tileSize + worldGenerator.spacing));
 
-        // Mark the occupied tiles and cleanse the starting tile
         for (int x = startX; x < startX + selectedBuildingScript.width; x++)
         {
             for (int z = startZ; z < startZ + selectedBuildingScript.height; z++)
@@ -153,10 +152,10 @@ public class BuildSystem : MonoBehaviour
                 if (x >= 0 && x < worldGenerator.worldWidth && z >= 0 && z < worldGenerator.worldHeight)
                 {
                     Tile tile = worldGenerator.tiles[x, z];
-                    if (tile != null) // Ensure the tile is not null
+                    if (tile != null)
                     {
                         tile.isOccupied = true;
-                        selectedBuildingScript.OnPlaced(tile); // Perform cleansing operation
+                        selectedBuildingScript.OnPlaced(tile);
                     }
                     else
                     {
@@ -166,13 +165,12 @@ public class BuildSystem : MonoBehaviour
             }
         }
 
-        // Deduct resources
         foreach (var requirement in selectedBuildingScript.resourceRequirements)
         {
             playerResources[GetResourceIndex(requirement.resourceName)] -= requirement.amount;
         }
 
-        selectedBuildingPrefab = null; // Clear selection after placing the building
+        selectedBuildingPrefab = null;
     }
 
 
@@ -184,6 +182,25 @@ public class BuildSystem : MonoBehaviour
             case "Stone": return 1;
             case "Soul": return 2;
             default: return -1; // Invalid resource name
+        }
+    }
+
+    void PlaceBuildingOnTile(Tile tile, GameObject building)
+    {
+        // Set the building's position to match the tile's position
+        building.transform.position = new Vector3(tile.transform.position.x, 2, tile.transform.position.z);
+
+        // Make the building a child of the tile
+        building.transform.SetParent(tile.transform);
+
+        // Mark the tile as occupied
+        tile.isOccupied = true;
+
+        // If your building has specific logic to run when placed, call it here
+        Building buildingScript = building.GetComponent<Building>();
+        if (buildingScript != null)
+        {
+            buildingScript.OnPlaced(tile);
         }
     }
 }
