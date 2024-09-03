@@ -2,7 +2,13 @@ using UnityEngine;
 
 public class Cleanser : Building
 {
-    public int cleanseRadius = 1; // Temizleyici binanýn etki alaný
+    public int cleanseRadius = 1; // Cleansing radius of the building
+
+    public override void OnPlaced(Tile tile)
+    {
+        base.OnPlaced(tile);
+        CleanseArea(tile, FindObjectOfType<WorldGenerator>());
+    }
 
     public void CleanseArea(Tile centerTile, WorldGenerator worldGenerator)
     {

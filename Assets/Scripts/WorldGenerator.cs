@@ -1,28 +1,27 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using static Tile;
 
 public class WorldGenerator : MonoBehaviour
 {
     [Header("Prefabs")]
-    public GameObject greenlandPrefab; // Greenland tile için prefab
-    public GameObject rottenlandPrefab; // Rottenland tile için prefab
-    public GameObject[] objects; // Aðaç, taþ gibi objeler
-    public GameObject basePrefab; // Oyuncu üssü (base) için prefab
+    public GameObject greenlandPrefab;
+    public GameObject rottenlandPrefab;
+    public GameObject[] objects;
+    public GameObject basePrefab;
 
     [Header("World Settings")]
-    public int worldWidth = 10; // Dünyanýn geniþliði
-    public int worldHeight = 10; // Dünyanýn yüksekliði
-    public float tileSize = 1f; // Tile boyutu
-    public float spacing = 0.1f; // Tilelar arasýndaki boþluk
-    public float objectSpawnChance = 0.2f; // Objelerin spawn olma ihtimali
-    public float objectHeightOffset = 0.5f; // Objelerin y ekseninde yerleþim düzeltmesi
-    public int greenlandRadius = 2; // Base etrafýndaki Greenland alaný
-    public Tile[,] tiles; // Tüm tile'larý saklamak için 2D dizi
+    public int worldWidth = 10;
+    public int worldHeight = 10;
+    public float tileSize = 1f;
+    public float spacing = 0.1f;
+    public float objectSpawnChance = 0.2f;
+    public float objectHeightOffset = 0.5f;
+    public int greenlandRadius = 2;
+    public Tile[,] tiles;
 
     void Awake()
     {
-        // Enable fog
+        // Fog ayarlarýný yap
         RenderSettings.fog = true;
         RenderSettings.fogMode = FogMode.Exponential;
         RenderSettings.fogColor = Color.gray;
@@ -42,97 +41,131 @@ public class WorldGenerator : MonoBehaviour
         {
             for (int z = 0; z < worldHeight; z++)
             {
-                
-                // Tile'ýn türünü belirle
                 GameObject tilePrefab = rottenlandPrefab; // Varsayýlan olarak Rottenland
-                TileType tileType = TileType.Rottenland;
+                TileType tileType = TileType.Rottenland;  // TileType enum'ýný burada kullanýyoruz
                 bool isCleansed = false;
 
-                // Greenland için merkezi bir alan belirle
                 if (Mathf.Abs(x - centerX) <= greenlandRadius && Mathf.Abs(z - centerZ) <= greenlandRadius)
                 {
                     tilePrefab = greenlandPrefab;
                     tileType = TileType.Greenland;
-                    isCleansed = true; // Baþlangýçta Greenland olan tile'lar temizlenmiþ olarak baþlar
+                    isCleansed = true;
                 }
 
-                // Tile oluþturma
                 Vector3 tilePosition = new Vector3(x * (tileSize + spacing), 0, z * (tileSize + spacing));
                 GameObject tileObject = Instantiate(tilePrefab, tilePosition, Quaternion.identity);
-
-                 // Tile'ýn spawnlayabileceði objeleri ayarla
-                // Tile'ý WorldGenerator objesinin child'ý yap
                 tileObject.transform.SetParent(transform);
-                tileObject.transform.localScale = new Vector3(tileSize, 1, tileSize); // Tile boyutunu ayarla
+                tileObject.transform.localScale = new Vector3(tileSize, 1, tileSize);
 
-                // Tile componentini ekleyip diziye kaydet
                 Tile tile = tileObject.AddComponent<Tile>();
                 tile.isOccupied = false;
                 tile.isCleansed = isCleansed;
-                tile.tileType = tileType;
+                tile.tileType = tileType;  // Enum'ý burada kullanýyoruz
                 tiles[x, z] = tile;
 
-                // Objelerin sadece Greenland'da spawn olma ihtimali
+                // Obje spawn etme olasýlýðýný sadece Greenland tiles için uygula
                 if (tileType == TileType.Greenland && Random.value < objectSpawnChance)
                 {
-                    int randomIndex = Random.Range(0, objects.Length);
-                    GameObject obj = objects[randomIndex];
-
-                    Vector3 objectPosition = new Vector3(tileObject.transform.position.x, tileObject.transform.position.y + objectHeightOffset, tileObject.transform.position.z);
-                    Quaternion randomRotation = Quaternion.Euler(0, Random.Range(0f, 360f), 0);
-
-                    // Objeyi oluþtur ve tile'ýn child'ý yap
-                    GameObject placedObject = Instantiate(obj, objectPosition, randomRotation);
-                    placedObject.transform.SetParent(tileObject.transform);
-
-                    // Tile'ý dolu olarak iþaretle
-                    tile.isOccupied = true;
+                   SpawnObjectsOnTile(tileObject);
                 }
             }
         }
     }
+
+    void SpawnObjectsOnTile(GameObject tileObject)
+    {
+        // Tile üzerindeki SpawnPoint objesini bul
+        Transform spawnPoint = tileObject.transform.Find("SpawnPoint");
+        if (spawnPoint == null)
+        {
+            Debug.LogError("no spawn");
+        }
+        Debug.Log(spawnPoint);
+        // Eðer SpawnPoint objesi yoksa veya tile zaten doluysa obje spawn etmiyoruz
+        if (spawnPoint == null || tileObject.GetComponent<Tile>().isOccupied)
+        {
+            return;
+        }
+
+        int randomIndex = Random.Range(0, objects.Length);
+        GameObject obj = objects[randomIndex];
+
+        // Obje spawn edilirken SpawnPoint pozisyonunu kullanýyoruz
+        Vector3 objectPosition = new Vector3(spawnPoint.position.x, spawnPoint.position.y, spawnPoint.position.z);
+        Quaternion randomRotation = Quaternion.Euler(0, Random.Range(0f, 360f), 0);
+
+        GameObject placedObject = Instantiate(obj, objectPosition, randomRotation);
+        placedObject.transform.SetParent(tileObject.transform);
+
+        // Bu tile artýk dolu olarak iþaretlenir
+        tileObject.GetComponent<Tile>().isOccupied = true;
+    }
+
+
+
 
     void PlacePlayerBase()
     {
         int centerX = worldWidth / 2;
         int centerZ = worldHeight / 2;
 
-        // Base'i merkezde yerleþtir
-        Vector3 basePosition = new Vector3(centerX * (tileSize + spacing), 0, centerZ * (tileSize + spacing));
-        GameObject playerBase = Instantiate(basePrefab, new Vector3(basePosition.x, basePosition.y + objectHeightOffset, basePosition.z), Quaternion.identity);
-        playerBase.transform.SetParent(transform); // Base'i WorldGenerator objesinin child'ý yap
-    }
+        // Place the base at the center of the map
+        Vector3 basePosition = new Vector3(centerX * (tileSize + spacing), 2, centerZ * (tileSize + spacing));
+        GameObject playerBase = Instantiate(basePrefab, basePosition, Quaternion.identity);
+        playerBase.transform.SetParent(transform);
 
-    // Bu metodu kullanarak herhangi bir tile'a bina yerleþtirildiðinde isOccupied'ý true yapabilirsiniz
-    public void OccupyTile(int x, int z)
-    {
-        if (x >= 0 && x < worldWidth && z >= 0 && z < worldHeight)
+        // Mark the 3x3 area around the base as occupied
+        for (int x = centerX - 1; x <= centerX + 1; x++)
         {
-            tiles[x, z].isOccupied = true;
+            for (int z = centerZ - 1; z <= centerZ + 1; z++)
+            {
+                if (x >= 0 && x < worldWidth && z >= 0 && z < worldHeight)
+                {
+                    tiles[x, z].isOccupied = true;
+                }
+            }
         }
     }
 
-    // Bu metodu kullanarak herhangi bir tile'ý temizleyip Greenland yapabilirsiniz
     public void CleanseTile(int x, int z)
     {
-        if (x >= 0 && x < worldWidth && z >= 0 && z < worldHeight)
-        {
-            Tile tile = tiles[x, z];
-            tile.isCleansed = true;
-            tile.tileType = TileType.Greenland;
+        Tile tile = tiles[x, z];
 
-            // Rottenland prefab'ýný Greenland prefab'ý ile deðiþtir
-            GameObject tileObject = Instantiate(greenlandPrefab, tile.transform.position, Quaternion.identity);
-            tileObject.transform.SetParent(transform);
-            tileObject.transform.localScale = new Vector3(tileSize, 1, tileSize);
-            Destroy(tile.gameObject); // Eski tile'ý yok et
-            tiles[x, z] = tileObject.AddComponent<Tile>(); // Yeni tile'ý diziye kaydet
+        // Eðer tile null ise hata vermeden çýk
+        if (tile == null)
+        {
+            Debug.LogError($"Tile at ({x}, {z}) is null.");
+            return;
+        }
+
+        // Tile'ýn tipini Greenland olarak deðiþtir
+        tile.tileType = TileType.Greenland;
+        tile.isCleansed = true;
+
+        // Tile'ý görsel olarak da temizlenmiþ olarak iþaretleyebilirsiniz
+        // Örneðin, prefabý deðiþtirmek veya rengi güncellemek için buraya kod ekleyin
+        GameObject cleansedTile = Instantiate(greenlandPrefab, tile.transform.position, Quaternion.identity);
+        cleansedTile.transform.SetParent(tile.transform.parent);
+        cleansedTile.transform.localScale = tile.transform.localScale;
+
+        // Eski tile'ý yok et ve yenisiyle deðiþtir
+        Destroy(tile.gameObject);
+        tiles[x, z] = cleansedTile.GetComponent<Tile>();
+
+        if (tiles[x, z] == null)
+        {
+            Debug.LogError($"Failed to get Tile component from the cleansed prefab at ({x}, {z})");
+            return;
+        }
+
+        tiles[x, z].isCleansed = true;
+        tiles[x, z].tileType = TileType.Greenland;
+
+        // Temizlenen tile üzerinde aðaç ve taþlarý tekrar spawn etme olasýlýðýný kontrol et
+        if (Random.value < objectSpawnChance)
+        {
+            SpawnObjectsOnTile(cleansedTile);
         }
     }
-}
 
-public enum TileType
-{
-    Greenland,
-    Rottenland
 }
