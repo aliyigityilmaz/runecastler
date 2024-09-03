@@ -3,10 +3,10 @@ using UnityEngine.UI;
 
 public class BuildSystem : MonoBehaviour
 {
-    public GameObject buildModeUI; // UI element to show when in build mode
-    public Button[] buildingButtons; // Array of buttons representing each building
-    public GameObject[] buildingPrefabs; // Array of building prefabs
-    public int[] playerResources; // Array to store player's resources (e.g., wood, stone)
+    public GameObject buildModeUI;
+    public Button[] buildingButtons;
+    public GameObject[] buildingPrefabs;
+    public int[] playerResources = new int[3]; // Odun, Taþ, Ruh sýrasýyla
 
     private WorldGenerator worldGenerator;
     private Camera mainCamera;
@@ -18,18 +18,18 @@ public class BuildSystem : MonoBehaviour
     {
         worldGenerator = FindObjectOfType<WorldGenerator>();
         mainCamera = Camera.main;
-        buildModeUI.SetActive(false); // Ensure the UI is hidden at the start
+        buildModeUI.SetActive(false);
         InitializeBuildingButtons();
     }
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.B)) // Toggle build mode with the B key
+        if (Input.GetKeyDown(KeyCode.B))
         {
             ToggleBuildMode();
         }
 
-        if (isBuildModeActive && selectedBuildingPrefab != null && Input.GetMouseButtonDown(0)) // Left mouse button
+        if (isBuildModeActive && selectedBuildingPrefab != null && Input.GetMouseButtonDown(0))
         {
             TryPlaceBuilding();
         }
@@ -38,11 +38,11 @@ public class BuildSystem : MonoBehaviour
     void ToggleBuildMode()
     {
         isBuildModeActive = !isBuildModeActive;
-        buildModeUI.SetActive(isBuildModeActive); // Show or hide the build mode UI
+        buildModeUI.SetActive(isBuildModeActive);
 
         if (!isBuildModeActive)
         {
-            selectedBuildingPrefab = null; // Deselect any building when leaving build mode
+            selectedBuildingPrefab = null;
         }
     }
 
@@ -58,7 +58,20 @@ public class BuildSystem : MonoBehaviour
     void SelectBuilding(int index)
     {
         selectedBuildingPrefab = buildingPrefabs[index];
-        selectedBuildingScript = selectedBuildingPrefab.GetComponent<Building>();
+        if (selectedBuildingPrefab != null)
+        {
+            selectedBuildingScript = selectedBuildingPrefab.GetComponent<Building>();
+            Debug.Log("Building selected: " + selectedBuildingPrefab.name);
+        }
+        else
+        {
+            Debug.LogError("Selected building prefab is null");
+        }
+
+        if (selectedBuildingScript == null)
+        {
+            Debug.LogError("Building script is missing on the selected prefab");
+        }
     }
 
     void TryPlaceBuilding()
@@ -76,7 +89,6 @@ public class BuildSystem : MonoBehaviour
 
     bool CanPlaceBuilding(Tile startingTile)
     {
-        // Check if the player has enough resources
         foreach (var requirement in selectedBuildingScript.resourceRequirements)
         {
             if (playerResources[GetResourceIndex(requirement.resourceName)] < requirement.amount)
@@ -85,12 +97,10 @@ public class BuildSystem : MonoBehaviour
             }
         }
 
-        // Get tile position in the grid
         Vector3 tilePosition = startingTile.transform.position;
         int startX = Mathf.RoundToInt(tilePosition.x / (worldGenerator.tileSize + worldGenerator.spacing));
         int startZ = Mathf.RoundToInt(tilePosition.z / (worldGenerator.tileSize + worldGenerator.spacing));
 
-        // Check if the building can fit in the grid and tiles are not occupied
         for (int x = startX; x < startX + selectedBuildingScript.width; x++)
         {
             for (int z = startZ; z < startZ + selectedBuildingScript.height; z++)
@@ -116,25 +126,27 @@ public class BuildSystem : MonoBehaviour
         int startX = Mathf.RoundToInt(tilePosition.x / (worldGenerator.tileSize + worldGenerator.spacing));
         int startZ = Mathf.RoundToInt(tilePosition.z / (worldGenerator.tileSize + worldGenerator.spacing));
 
-        // Mark the occupied tiles
+        // Mark the occupied tiles and cleanse the starting tile
         for (int x = startX; x < startX + selectedBuildingScript.width; x++)
         {
             for (int z = startZ; z < startZ + selectedBuildingScript.height; z++)
             {
                 if (x >= 0 && x < worldGenerator.worldWidth && z >= 0 && z < worldGenerator.worldHeight)
                 {
-                    worldGenerator.tiles[x, z].isOccupied = true;
+                    Tile tile = worldGenerator.tiles[x, z];
+                    tile.isOccupied = true;
+                    selectedBuildingScript.OnPlaced(tile); // Temizleme iþlemi yapýlýr
                 }
             }
         }
 
-        // Deduct resources
+        // Kaynaklarý azalt
         foreach (var requirement in selectedBuildingScript.resourceRequirements)
         {
             playerResources[GetResourceIndex(requirement.resourceName)] -= requirement.amount;
         }
 
-        selectedBuildingPrefab = null; // Deselect the building after placement
+        selectedBuildingPrefab = null; // Bina yerleþtirildikten sonra seçimi kaldýr
     }
 
     int GetResourceIndex(string resourceName)

@@ -8,7 +8,7 @@ public class Billboard : MonoBehaviour
     {
         if (mainCamera == null)
         {
-            mainCamera = GameObject.FindWithTag("MainCam");
+            mainCamera = GameObject.FindWithTag("MainCamera");
         }
 
         transform.LookAt(transform.position + mainCamera.transform.rotation * Vector3.forward, mainCamera.transform.rotation * Vector3.up);
