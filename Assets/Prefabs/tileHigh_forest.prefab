@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 3901084956017824750}
   - component: {fileID: 7099314052649971163}
   - component: {fileID: 8775569557746985903}
+  - component: {fileID: 2356237236846949505}
   m_Layer: 0
   m_Name: tileHigh_forest
   m_TagString: Untagged
@@ -125,6 +126,27 @@ MonoBehaviour:
   tileType: 0
   spawnableObjects: []
   spawnChance: 0.1
+--- !u!95 &2356237236846949505
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 205493288878512161}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 89da8ff73393c0c4982da01fe4b2cd05, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &416270636053071023
 GameObject:
   m_ObjectHideFlags: 0
