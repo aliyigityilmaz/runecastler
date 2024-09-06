@@ -1,5 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
+using System.Collections;
+using System;
 
 public class ResourceObject : MonoBehaviour
 {
@@ -107,6 +109,30 @@ public class ResourceObject : MonoBehaviour
                 Destroy(instantiatedParticles.gameObject, instantiatedParticles.main.duration);
             }
         }
+
+        StartCoroutine(ShakeObject(0.1f, 0.1f));
+    }
+
+    IEnumerator ShakeObject(float duration, float magnitude)
+    {
+        Vector3 originalPosition = transform.localPosition;
+
+        float elapsed = 0.0f;
+
+        while (elapsed < duration)
+        {
+            float offsetX = UnityEngine.Random.Range(-1f, 1f) * magnitude;
+            float offsetY = UnityEngine.Random.Range(-1f, 1f) * magnitude;
+
+            transform.localPosition = new Vector3(originalPosition.x + offsetX, originalPosition.y + offsetY, originalPosition.z);
+
+            elapsed += Time.deltaTime;
+
+            yield return null; // Bir sonraki frame'e kadar bekle
+        }
+
+        // Objeyi orijinal pozisyonuna geri döndür
+        transform.localPosition = originalPosition;
     }
 
     void PlayDestroyEffects()
