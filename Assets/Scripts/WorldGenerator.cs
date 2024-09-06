@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using static Tile;
 
@@ -74,16 +75,20 @@ public class WorldGenerator : MonoBehaviour
 
     void SpawnObjectsOnTile(GameObject tileObject)
     {
-        // Tile üzerindeki SpawnPoint objesini bul
+        Tile tile = tileObject.GetComponent<Tile>();
+
+        // Eðer tile doluysa veya base alanýndaysa obje spawn etme
+        if (tile.isOccupied)
+        {
+            Debug.Log("Tile is already occupied or part of the base.");
+            return;
+        }
+
         Transform spawnPoint = tileObject.transform.Find("SpawnPoint");
+
         if (spawnPoint == null)
         {
-            Debug.LogError("no spawn");
-        }
-        Debug.Log(spawnPoint);
-        // Eðer SpawnPoint objesi yoksa veya tile zaten doluysa obje spawn etmiyoruz
-        if (spawnPoint == null || tileObject.GetComponent<Tile>().isOccupied)
-        {
+            Debug.LogError("SpawnPoint eksik.");
             return;
         }
 
@@ -91,14 +96,14 @@ public class WorldGenerator : MonoBehaviour
         GameObject obj = objects[randomIndex];
 
         // Obje spawn edilirken SpawnPoint pozisyonunu kullanýyoruz
-        Vector3 objectPosition = new Vector3(spawnPoint.position.x, spawnPoint.position.y, spawnPoint.position.z);
+        Vector3 objectPosition = spawnPoint.position;
         Quaternion randomRotation = Quaternion.Euler(0, Random.Range(0f, 360f), 0);
 
         GameObject placedObject = Instantiate(obj, objectPosition, randomRotation);
         placedObject.transform.SetParent(tileObject.transform);
 
         // Bu tile artýk dolu olarak iþaretlenir
-        tileObject.GetComponent<Tile>().isOccupied = true;
+        tile.isOccupied = true;
     }
 
 
@@ -116,7 +121,7 @@ public class WorldGenerator : MonoBehaviour
             {
                 if (x >= 0 && x < worldWidth && z >= 0 && z < worldHeight)
                 {
-                    // Place the base building only in the center
+                    // Place the base building only in the center tile
                     if (x == centerX && z == centerZ)
                     {
                         Vector3 basePosition = new Vector3(x * (tileSize + spacing), 2, z * (tileSize + spacing));
@@ -124,9 +129,12 @@ public class WorldGenerator : MonoBehaviour
 
                         // Parent the base to the center tile
                         playerBase.transform.SetParent(tiles[x, z].transform);
+
+                        // Base objesinin olduðu tile'ý iþaretle
+                        tiles[x, z].isOccupied = true;
                     }
 
-                    // Mark the tile as occupied and prevent any spawning
+                    // Base çevresindeki diðer tüm kareleri de isOccupied = true olarak iþaretle
                     tiles[x, z].isOccupied = true;
                 }
             }
