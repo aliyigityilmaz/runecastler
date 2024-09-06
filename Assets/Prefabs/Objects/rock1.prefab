@@ -32,7 +32,7 @@ Transform:
   m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -0, y: 2, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 3167341730181386405}
   m_Father: {fileID: 0}
@@ -104,6 +104,14 @@ MonoBehaviour:
   maxHitsForResource: 4
   fillImage: {fileID: 3479601600936093391}
   fillCanvas: {fileID: 5698849707201812581}
+  woodHitSound: {fileID: 0}
+  stoneHitSound: {fileID: 0}
+  destroySound: {fileID: 0}
+  woodHitParticles: {fileID: 1060380044956373038, guid: 4f312acad3b50f44f8b6bccf2e0a46e1,
+    type: 3}
+  stoneHitParticles: {fileID: 2163412281637889366, guid: 08e0c8f8d76543a48876d7d9884f720d,
+    type: 3}
+  destroyParticles: {fileID: 0}
 --- !u!65 &-2805815796261051326
 BoxCollider:
   m_ObjectHideFlags: 0

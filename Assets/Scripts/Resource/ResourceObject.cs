@@ -16,6 +16,14 @@ public class ResourceObject : MonoBehaviour
     public Image fillImage;
     public Canvas fillCanvas;
 
+    [Header("Effects")]
+    public AudioClip woodHitSound;
+    public AudioClip stoneHitSound;
+    public AudioClip destroySound;
+    public ParticleSystem woodHitParticles;
+    public ParticleSystem stoneHitParticles;
+    public ParticleSystem destroyParticles;
+
     void Start()
     {
         tile = GetComponentInParent<Tile>(); // Parent tile'ý al
@@ -75,24 +83,45 @@ public class ResourceObject : MonoBehaviour
 
     void PlayHitEffects()
     {
-        // Ses ve partikül efektlerini oynat
-        // if (resourceType == ResourceType.Wood)
-        // {
-        //     AudioSource.PlayClipAtPoint(woodHitSound, transform.position);
-        //     woodHitParticles?.Play();
-        // }
-        // else if (resourceType == ResourceType.Stone)
-        // {
-        //     AudioSource.PlayClipAtPoint(stoneHitSound, transform.position);
-        //     stoneHitParticles?.Play();
-        // }
+        if (resourceType == ResourceType.Wood)
+        {
+            if (woodHitSound != null)
+            {
+                AudioSource.PlayClipAtPoint(woodHitSound, transform.position);
+            }
+            if (woodHitParticles != null)
+            {
+                ParticleSystem instantiatedParticles = Instantiate(woodHitParticles, transform.position, Quaternion.identity);
+                Destroy(instantiatedParticles.gameObject, instantiatedParticles.main.duration);
+            }
+        }
+        else if (resourceType == ResourceType.Stone)
+        {
+            if (stoneHitSound != null)
+            {
+                AudioSource.PlayClipAtPoint(stoneHitSound, transform.position);
+            }
+            if (stoneHitParticles != null)
+            {
+                ParticleSystem instantiatedParticles = Instantiate(stoneHitParticles, transform.position, Quaternion.identity);
+                Destroy(instantiatedParticles.gameObject, instantiatedParticles.main.duration);
+            }
+        }
     }
 
     void PlayDestroyEffects()
     {
         // Yok olma sesini ve partikül efektlerini oynat
-        // AudioSource.PlayClipAtPoint(destroySound, transform.position);
-        // Instantiate(destroyParticles, transform.position, Quaternion.identity); // Yok olma efekti
+        if (destroySound != null)
+        {
+            AudioSource.PlayClipAtPoint(destroySound, transform.position);
+        }
+        if (destroyParticles != null)
+        {
+            // Yok olma partikülünü instantiate et ve bir süre sonra yok et
+            ParticleSystem instantiatedParticles = Instantiate(destroyParticles, transform.position, Quaternion.identity);
+            Destroy(instantiatedParticles.gameObject, instantiatedParticles.main.duration);
+        }
     }
 
     void DestroyResource()
