@@ -229,7 +229,8 @@ MonoBehaviour:
     type: 3}
   stoneHitParticles: {fileID: 2163412281637889366, guid: 08e0c8f8d76543a48876d7d9884f720d,
     type: 3}
-  destroyParticles: {fileID: 0}
+  destroyParticles: {fileID: 8462300214691670556, guid: 7ac8c2ce328ca2e4d9eca99c0c14c638,
+    type: 3}
 --- !u!65 &-1242794290595270182
 BoxCollider:
   m_ObjectHideFlags: 0
