@@ -1,4 +1,5 @@
 using System.Collections;
+using Unity.AI.Navigation;
 using UnityEngine;
 using static Tile;
 
@@ -19,6 +20,9 @@ public class WorldGenerator : MonoBehaviour
     public float objectHeightOffset = 0.5f;
     public int greenlandRadius = 2;
     public Tile[,] tiles;
+
+    [Header("NavMesh Settings")]
+    public NavMeshSurface navMeshSurface;
 
     void Awake()
     {

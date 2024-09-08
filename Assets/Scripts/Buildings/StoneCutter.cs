@@ -2,28 +2,13 @@ using UnityEngine;
 
 public class StoneCutter : Building
 {
-    public int gatherRadius = 2; // Maximum radius to gather resources
-    public int gatherAmountPerTick = 1; // Amount of wood gathered per tick
-    public float gatherInterval = 5f; // Time between resource gathering in seconds
-
-    private float gatherTimer = 0f;
-
-    void Update()
+    protected override void PerformBuildingAction()
     {
-        gatherTimer -= Time.deltaTime;
-
-        if (gatherTimer <= 0f)
-        {
-            GatherWood();
-            gatherTimer = gatherInterval; // Reset the timer
-        }
+        GatherStone();
     }
 
-    void GatherWood()
+    private void GatherStone()
     {
-        WorldGenerator worldGenerator = FindObjectOfType<WorldGenerator>();
-        ResourceSystem resourceSystem = FindObjectOfType<ResourceSystem>();
-
         int centerX = Mathf.RoundToInt(transform.position.x / (worldGenerator.tileSize + worldGenerator.spacing));
         int centerZ = Mathf.RoundToInt(transform.position.z / (worldGenerator.tileSize + worldGenerator.spacing));
 

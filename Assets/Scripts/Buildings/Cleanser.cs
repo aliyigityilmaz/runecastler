@@ -2,23 +2,26 @@ using UnityEngine;
 
 public class Cleanser : Building
 {
-    public int cleanseRadius = 1; // Cleansing radius of the building
-
     public override void OnPlaced(Tile tile)
     {
         base.OnPlaced(tile);
-        CleanseArea(tile, FindObjectOfType<WorldGenerator>());
+        CleanseArea(tile);
     }
 
-    public void CleanseArea(Tile centerTile, WorldGenerator worldGenerator)
+    protected override void PerformBuildingAction()
+    {
+        // Cleanse doesn't have a continuous action, so no action here
+    }
+
+    private void CleanseArea(Tile centerTile)
     {
         Vector3 centerPosition = centerTile.transform.position;
         int centerX = Mathf.RoundToInt(centerPosition.x / (worldGenerator.tileSize + worldGenerator.spacing));
         int centerZ = Mathf.RoundToInt(centerPosition.z / (worldGenerator.tileSize + worldGenerator.spacing));
 
-        for (int x = centerX - cleanseRadius; x <= centerX + cleanseRadius; x++)
+        for (int x = centerX - gatherRadius; x <= centerX + gatherRadius; x++)
         {
-            for (int z = centerZ - cleanseRadius; z <= centerZ + cleanseRadius; z++)
+            for (int z = centerZ - gatherRadius; z <= centerZ + gatherRadius; z++)
             {
                 if (x >= 0 && x < worldGenerator.worldWidth && z >= 0 && z < worldGenerator.worldHeight)
                 {

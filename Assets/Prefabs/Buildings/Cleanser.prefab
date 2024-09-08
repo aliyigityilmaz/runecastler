@@ -122,4 +122,7 @@ MonoBehaviour:
   height: 1
   resourceRequirements: []
   buildingName: Cleanser
-  cleanseRadius: 3
+  health: 0
+  gatherRadius: 0
+  gatherAmountPerTick: 0
+  gatherInterval: 0
