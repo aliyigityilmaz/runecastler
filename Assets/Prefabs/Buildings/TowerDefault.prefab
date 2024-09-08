@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &3062974490685292900
+--- !u!1 &1810729931670153221
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,49 +8,49 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 3072356353329218801}
-  - component: {fileID: 7189849879643847970}
-  - component: {fileID: 8286873227337698326}
-  - component: {fileID: 4496025152117611149}
-  - component: {fileID: 8434669607582435101}
-  - component: {fileID: 7398793638438754096}
+  - component: {fileID: 8611553671083238383}
+  - component: {fileID: 583975594817056371}
+  - component: {fileID: 8855218381247735131}
+  - component: {fileID: 4293474351113732059}
+  - component: {fileID: 8407492295499818817}
+  - component: {fileID: 4755622516297973321}
   m_Layer: 0
-  m_Name: WoodCutter
+  m_Name: TowerDefault
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &3072356353329218801
+--- !u!4 &8611553671083238383
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3062974490685292900}
+  m_GameObject: {fileID: 1810729931670153221}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1, y: 2, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!33 &7189849879643847970
+--- !u!33 &583975594817056371
 MeshFilter:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3062974490685292900}
+  m_GameObject: {fileID: 1810729931670153221}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
---- !u!23 &8286873227337698326
+--- !u!23 &8855218381247735131
 MeshRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3062974490685292900}
+  m_GameObject: {fileID: 1810729931670153221}
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
@@ -86,13 +86,13 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &4496025152117611149
+--- !u!65 &4293474351113732059
 BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3062974490685292900}
+  m_GameObject: {fileID: 1810729931670153221}
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
@@ -107,34 +107,39 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &8434669607582435101
+--- !u!114 &8407492295499818817
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3062974490685292900}
+  m_GameObject: {fileID: 1810729931670153221}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 56f44fdbb4ad92045aae0371b4f59051, type: 3}
+  m_Script: {fileID: 11500000, guid: 4c36de79d4564dd499c16dd9764cf2b8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   width: 1
   height: 1
   resourceRequirements: []
-  buildingName: WoodCutter
-  health: 20
-  gatherRadius: 2
-  gatherAmountPerTick: 1
-  gatherInterval: 3
---- !u!95 &7398793638438754096
+  buildingName: Tower
+  health: 0
+  gatherRadius: 0
+  gatherAmountPerTick: 0
+  gatherInterval: 0
+  attackRange: 5
+  attackRate: 1
+  attackDamage: 10
+  arrowPrefab: {fileID: 0}
+  towerElement: 0
+--- !u!95 &4755622516297973321
 Animator:
   serializedVersion: 5
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3062974490685292900}
+  m_GameObject: {fileID: 1810729931670153221}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
   m_Controller: {fileID: 9100000, guid: 57539af46f605204c90782a2f9d43937, type: 2}

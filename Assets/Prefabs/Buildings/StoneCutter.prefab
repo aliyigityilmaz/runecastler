@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 7560617103890187590}
   - component: {fileID: 7429891678065431098}
   - component: {fileID: -3783587490724542715}
+  - component: {fileID: -2996301583312818082}
   m_Layer: 0
   m_Name: StoneCutter
   m_TagString: Untagged
@@ -126,3 +127,24 @@ MonoBehaviour:
   gatherRadius: 2
   gatherAmountPerTick: 1
   gatherInterval: 5
+--- !u!95 &-2996301583312818082
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5584024649326329477}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 57539af46f605204c90782a2f9d43937, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
