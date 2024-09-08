@@ -35,6 +35,9 @@ public class WorldGenerator : MonoBehaviour
         tiles = new Tile[worldWidth, worldHeight];
         GenerateWorld();
         PlacePlayerBase();
+
+        // NavMesh Bake iþlemi
+        StartCoroutine(BakeNavMeshAfterGeneration());
     }
 
     void GenerateWorld()
@@ -142,6 +145,23 @@ public class WorldGenerator : MonoBehaviour
                     tiles[x, z].isOccupied = true;
                 }
             }
+        }
+    }
+
+    IEnumerator BakeNavMeshAfterGeneration()
+    {
+        // Tüm dünya tamamlandýktan sonra bir çerçeve bekle
+        yield return new WaitForEndOfFrame();
+
+        // NavMesh bake iþlemini baþlat
+        if (navMeshSurface != null)
+        {
+            navMeshSurface.BuildNavMesh();
+            Debug.Log("NavMesh successfully baked!");
+        }
+        else
+        {
+            Debug.LogError("NavMeshSurface component is not assigned!");
         }
     }
 
