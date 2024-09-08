@@ -122,6 +122,7 @@ MonoBehaviour:
   height: 1
   resourceRequirements: []
   buildingName: StoneCutter
+  health: 20
   gatherRadius: 2
   gatherAmountPerTick: 1
   gatherInterval: 5

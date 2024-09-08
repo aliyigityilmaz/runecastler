@@ -184,19 +184,23 @@ public class WorldGenerator : MonoBehaviour
     {
         Tile tile = tiles[x, z];
 
-        // Eðer tile null ise hata vermeden çýk
         if (tile == null)
         {
             Debug.LogError($"Tile at ({x}, {z}) is null.");
             return;
         }
 
+        if (tile.tileType == Tile.TileType.Greenland)
+        {
+            Debug.Log($"Tile at ({x}, {z}) is already cleansed.");
+            return;
+        }
+
         // Tile'ýn tipini Greenland olarak deðiþtir
-        tile.tileType = TileType.Greenland;
+        tile.tileType = Tile.TileType.Greenland;
         tile.isCleansed = true;
 
-        // Tile'ý görsel olarak da temizlenmiþ olarak iþaretleyebilirsiniz
-        // Örneðin, prefabý deðiþtirmek veya rengi güncellemek için buraya kod ekleyin
+        // Görsel temizleme iþlemi
         GameObject cleansedTile = Instantiate(greenlandPrefab, tile.transform.position, Quaternion.identity);
         cleansedTile.transform.SetParent(tile.transform.parent);
         cleansedTile.transform.localScale = tile.transform.localScale;
@@ -212,7 +216,7 @@ public class WorldGenerator : MonoBehaviour
         }
 
         tiles[x, z].isCleansed = true;
-        tiles[x, z].tileType = TileType.Greenland;
+        tiles[x, z].tileType = Tile.TileType.Greenland;
 
         // Temizlenen tile üzerinde aðaç ve taþlarý tekrar spawn etme olasýlýðýný kontrol et
         if (Random.value < objectSpawnChance)
@@ -220,5 +224,11 @@ public class WorldGenerator : MonoBehaviour
             SpawnObjectsOnTile(cleansedTile);
         }
     }
+
+    public bool IsWithinBounds(int x, int z)
+    {
+        return x >= 0 && x < worldWidth && z >= 0 && z < worldHeight;
+    }
+
 
 }

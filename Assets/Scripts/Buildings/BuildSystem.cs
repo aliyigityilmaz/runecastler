@@ -17,7 +17,15 @@ public class BuildSystem : MonoBehaviour
 
     void Start()
     {
-        worldGenerator = FindObjectOfType<WorldGenerator>();
+        worldGenerator = GameObject.Find("WorldGenerator").GetComponent<WorldGenerator>();
+        if (worldGenerator != null && worldGenerator.tiles != null)
+        {
+            Debug.Log("WorldGenerator and tiles are properly initialized.");
+        }
+        else
+        {
+            Debug.LogError("WorldGenerator or tiles are not initialized correctly.");
+        }
         mainCamera = Camera.main;
         buildModeUI.SetActive(false);
         InitializeBuildingButtons();
@@ -139,6 +147,21 @@ public class BuildSystem : MonoBehaviour
 
         GameObject building = Instantiate(selectedBuildingPrefab, buildPosition, Quaternion.identity);
 
+        if (selectedBuildingScript == null)
+        {
+            Debug.LogError("No building script is selected.");
+            return;
+        }
+        if(startingTile == null)
+        {
+            Debug.LogError("No starting tile is selected.");
+            return;
+        }
+        if (building == null)
+        {
+            Debug.LogError("Building is null.");
+            return;
+        }
         PlaceBuildingOnTile(startingTile, building);
 
         Vector3 tilePosition = startingTile.transform.position;

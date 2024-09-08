@@ -2,36 +2,56 @@ using UnityEngine;
 
 public class Cleanser : Building
 {
+    public int cleanseRadius = 1;
+
+
+    // Building yerleþtirildiðinde çaðrýlýr
     public override void OnPlaced(Tile tile)
     {
-        base.OnPlaced(tile);
-        CleanseArea(tile);
+        base.OnPlaced(tile); // Temel yerleþtirme iþlemini yap
+        CleanseNearbyTiles(tile); // Yakýndaki fayanslarý temizle
     }
 
-    protected override void PerformBuildingAction()
+    // Yakýndaki fayanslarý temizle
+    private void CleanseNearbyTiles(Tile tile)
     {
-        // Cleanse doesn't have a continuous action, so no action here
-    }
-
-    private void CleanseArea(Tile centerTile)
-    {
-        Vector3 centerPosition = centerTile.transform.position;
-        int centerX = Mathf.RoundToInt(centerPosition.x / (worldGenerator.tileSize + worldGenerator.spacing));
-        int centerZ = Mathf.RoundToInt(centerPosition.z / (worldGenerator.tileSize + worldGenerator.spacing));
-
-        for (int x = centerX - gatherRadius; x <= centerX + gatherRadius; x++)
+        worldGenerator = FindObjectOfType<WorldGenerator>();
+        if (worldGenerator == null)
         {
-            for (int z = centerZ - gatherRadius; z <= centerZ + gatherRadius; z++)
+            Debug.LogError("WorldGenerator not found.");
+            return;
+        }
+
+        // Fayansýn pozisyonunu dünya grid koordinatlarýna dönüþtürelim
+        Vector3 tilePosition = tile.transform.position;
+        int tileX = Mathf.RoundToInt(tilePosition.x / (worldGenerator.tileSize + worldGenerator.spacing));
+        int tileZ = Mathf.RoundToInt(tilePosition.z / (worldGenerator.tileSize + worldGenerator.spacing));
+
+        for (int x = -cleanseRadius; x <= cleanseRadius; x++)
+        {
+            for (int z = -cleanseRadius; z <= cleanseRadius; z++)
             {
-                if (x >= 0 && x < worldGenerator.worldWidth && z >= 0 && z < worldGenerator.worldHeight)
+                int targetX = tileX + x;
+                int targetZ = tileZ + z;
+
+                // Fayansýn harita sýnýrlarý içinde olup olmadýðýný kontrol et
+                if (worldGenerator.IsWithinBounds(targetX, targetZ))
                 {
-                    Tile tile = worldGenerator.tiles[x, z];
-                    if (!tile.isCleansed)
+                    Tile targetTile = worldGenerator.tiles[targetX, targetZ];
+
+                    // Eðer fayans Rottenland ise temizleyelim
+                    if (targetTile.tileType == Tile.TileType.Rottenland)
                     {
-                        worldGenerator.CleanseTile(x, z);
+                        worldGenerator.CleanseTile(targetX, targetZ);  // Temizleme iþlemi
                     }
                 }
             }
         }
+    }
+
+    // Cleanser binasý için gather iþlemi yok, o yüzden burayý boþ býrakýyoruz
+    protected override void PerformBuildingAction()
+    {
+        // Cleanser bir gather iþlemi yapmaz
     }
 }

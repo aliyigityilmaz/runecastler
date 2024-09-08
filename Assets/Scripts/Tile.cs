@@ -40,6 +40,14 @@ public class Tile : MonoBehaviour
         isCleansed = true;
         isOccupied = false;
 
+        // Rottenland'den Greenland'e çevir
+        if (tileType == TileType.Rottenland)
+        {
+            tileType = TileType.Greenland;
+            Debug.Log("Tile cleansed and converted to Greenland.");
+        }
+
+        // Rastgele nesne spawn et
         if (Random.value < spawnChance)
         {
             SpawnObject();
