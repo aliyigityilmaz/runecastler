@@ -21,9 +21,10 @@ public class Tile : MonoBehaviour
         float randomDelay = Random.Range(0f, 1f); // 0-1 saniye arasýnda rastgele bir deðer seçiyoruz
         Invoke(nameof(PlaySpawnAnimation), randomDelay);
 
-        if (isCleansed && Random.value < spawnChance)
+        if (isCleansed && Random.value < spawnChance && !isOccupied)
         {
-            SpawnObject();
+            //SpawnObject();
+            //isOccupied = true;
         }
     }
 
@@ -48,9 +49,10 @@ public class Tile : MonoBehaviour
         }
 
         // Rastgele nesne spawn et
-        if (Random.value < spawnChance)
+        if (Random.value < spawnChance && !isOccupied)
         {
-            SpawnObject();
+            //SpawnObject();
+            //isOccupied = true;
         }
     }
 

@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 5360710531332748410}
   - component: {fileID: 6925701467225287896}
   - component: {fileID: 3784621038813021090}
-  - component: {fileID: -6764354532226884644}
+  - component: {fileID: -2411081026289932940}
   m_Layer: 0
   m_Name: tileHigh_desert
   m_TagString: Untagged
@@ -129,20 +129,19 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!114 &-6764354532226884644
-MonoBehaviour:
+--- !u!208 &-2411081026289932940
+NavMeshObstacle:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3888498164798971520}
   m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c67178f396ab4e240a73e24f1c32cb07, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  isOccupied: 0
-  isCleansed: 0
-  tileType: 0
-  spawnableObjects: []
-  spawnChance: 0.1
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 1, y: 1, z: 1}
+  m_MoveThreshold: 0.1
+  m_Carve: 0
+  m_CarveOnlyStationary: 1
+  m_Center: {x: 0, y: 1, z: 0}
+  m_TimeToStationary: 0.5
