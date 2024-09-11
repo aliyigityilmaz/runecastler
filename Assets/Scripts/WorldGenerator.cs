@@ -33,11 +33,20 @@ public class WorldGenerator : MonoBehaviour
         RenderSettings.fogDensity = 0.01f;
 
         tiles = new Tile[worldWidth, worldHeight];
+
+        // 1. Adým: Dünya oluþtur
         GenerateWorld();
+
+        // 2. Adým: Player base yerleþtir
         PlacePlayerBase();
+
+        // 3. Adým: Obje spawnlanmasý
+        SpawnObjectsAfterBase();
 
         // NavMesh Bake iþlemi
         StartCoroutine(BakeNavMeshAfterGeneration());
+
+        SetSpawnOccupied();
     }
 
     void GenerateWorld()
@@ -71,11 +80,7 @@ public class WorldGenerator : MonoBehaviour
                 tile.tileType = tileType;  // Enum'ý burada kullanýyoruz
                 tiles[x, z] = tile;
 
-                // Obje spawn etme olasýlýðýný sadece Greenland tiles için uygula
-                if (tileType == TileType.Greenland && Random.value < objectSpawnChance)
-                {
-                    SpawnObjectsOnTile(tileObject);
-                }
+                // Objeler þu an spawnlanmýyor, sadece base yerleþtikten sonra spawnlanacak.
             }
         }
     }
@@ -113,7 +118,21 @@ public class WorldGenerator : MonoBehaviour
         tile.isOccupied = true;
     }
 
+    void SetSpawnOccupied()
+    {
+        int centerX = worldWidth / 2;
+        int centerZ = worldHeight / 2;
 
+        tiles[centerX, centerZ].isOccupied = true;
+        tiles[centerX - 1, centerZ].isOccupied = true;
+        tiles[centerX + 1, centerZ].isOccupied = true;
+        tiles[centerX, centerZ - 1].isOccupied = true;
+        tiles[centerX, centerZ + 1].isOccupied = true;
+        tiles[centerX - 1, centerZ - 1].isOccupied = true;
+        tiles[centerX + 1, centerZ - 1].isOccupied = true;
+        tiles[centerX + 1, centerZ + 1].isOccupied = true;
+        tiles[centerX - 1, centerZ + 1].isOccupied = true;
+    }
 
 
     void PlacePlayerBase()
@@ -121,32 +140,57 @@ public class WorldGenerator : MonoBehaviour
         int centerX = worldWidth / 2;
         int centerZ = worldHeight / 2;
 
-        // Loop through a 3x3 area centered around the base
-        for (int x = centerX - 1; x <= centerX + 1; x++)
+        tiles[centerX, centerZ].isOccupied = true;
+        tiles[centerX - 1, centerZ].isOccupied = true;
+        tiles[centerX + 1, centerZ].isOccupied = true;
+        tiles[centerX, centerZ - 1].isOccupied = true;
+        tiles[centerX, centerZ + 1].isOccupied = true;
+        tiles[centerX - 1, centerZ - 1].isOccupied = true;
+        tiles[centerX + 1, centerZ - 1].isOccupied = true;
+        tiles[centerX + 1, centerZ + 1].isOccupied = true;
+        tiles[centerX - 1, centerZ + 1].isOccupied = true;
+
+        // "+" þeklinde ortadaki kareyi ve ona bitiþik olanlarý yok et
+        DestroyTile(centerX, centerZ);
+
+        // Base objesini ortadaki kareye spawnla
+        Vector3 basePosition = new Vector3(centerX * (tileSize + spacing), 2, centerZ * (tileSize + spacing));
+        GameObject playerBase = Instantiate(basePrefab, basePosition, Quaternion.identity);
+
+        // Base objesini parent yap
+        playerBase.transform.SetParent(transform);
+    }
+
+    void SpawnObjectsAfterBase()
+    {
+        // Obje spawn iþlemi sadece Greenland tile'larda ve belirli bir olasýlýk ile gerçekleþecek
+        for (int x = 0; x < worldWidth; x++)
         {
-            for (int z = centerZ - 1; z <= centerZ + 1; z++)
+            for (int z = 0; z < worldHeight; z++)
             {
-                if (x >= 0 && x < worldWidth && z >= 0 && z < worldHeight)
+                if (tiles[x, z] != null && tiles[x, z].tileType == TileType.Greenland && !tiles[x, z].isOccupied)
                 {
-                    // Place the base building only in the center tile
-                    if (x == centerX && z == centerZ)
+                    // Rastgele olasýlýk ile objeleri spawnla
+                    if (Random.value < objectSpawnChance)
                     {
-                        Vector3 basePosition = new Vector3(x * (tileSize + spacing), 2, z * (tileSize + spacing));
-                        GameObject playerBase = Instantiate(basePrefab, basePosition, Quaternion.identity);
-
-                        // Parent the base to the center tile
-                        playerBase.transform.SetParent(tiles[x, z].transform);
-
-                        // Base objesinin olduðu tile'ý iþaretle
-                        tiles[x, z].isOccupied = true;
+                        // Greenland tile'lar üzerinde obje spawnlamaya çalýþ
+                        SpawnObjectsOnTile(tiles[x, z].gameObject);
                     }
-
-                    // Base çevresindeki diðer tüm kareleri de isOccupied = true olarak iþaretle
-                    tiles[x, z].isOccupied = true;
                 }
             }
         }
     }
+
+    void DestroyTile(int x, int z)
+    {
+        if (x >= 0 && x < worldWidth && z >= 0 && z < worldHeight && tiles[x, z] != null)
+        {
+            // Tile'ý yok et ve grid'den kaldýr
+            Destroy(tiles[x, z].gameObject);
+            tiles[x, z] = null;
+        }
+    }
+
 
     IEnumerator BakeNavMeshAfterGeneration()
     {
