@@ -44,7 +44,7 @@ public class WorldGenerator : MonoBehaviour
         SpawnObjectsAfterBase();
 
         // NavMesh Bake iþlemi
-        StartCoroutine(BakeNavMeshAfterGeneration());
+        //StartCoroutine(BakeNavMeshAfterGeneration());
 
         SetSpawnOccupied();
     }
@@ -123,7 +123,10 @@ public class WorldGenerator : MonoBehaviour
         int centerX = worldWidth / 2;
         int centerZ = worldHeight / 2;
 
-        tiles[centerX, centerZ].isOccupied = true;
+        if(tiles[centerX, centerZ]!= null)
+        { 
+            tiles[centerX, centerZ].isOccupied = true;
+        }
         tiles[centerX - 1, centerZ].isOccupied = true;
         tiles[centerX + 1, centerZ].isOccupied = true;
         tiles[centerX, centerZ - 1].isOccupied = true;
